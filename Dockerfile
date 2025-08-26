@@ -1,4 +1,5 @@
-FROM nvidia/cuda:12.8.1-cudnn-devel-ubuntu22.04
+# Base image: Ubuntu 22.04 with Python 3.12 pre-installed
+FROM python:3.12-slim
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
@@ -17,30 +18,20 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python 3.12
-RUN apt-get update && apt-get install -y software-properties-common && \
-    add-apt-repository ppa:deadsnakes/ppa && \
-    apt-get update && apt-get install -y python3.12 && \
-    wget https://bootstrap.pypa.io/get-pip.py && \
-    python3.12 get-pip.py && \
-    rm get-pip.py
-
-# Set Python 3.12 as the default
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
-
-# Install pip dependencies
+# Copy Python dependencies and install
 COPY requirements.txt .
-RUN python3.12 -m pip install --no-cache-dir -r requirements.txt
+RUN python -m pip install --no-cache-dir -r requirements.txt
 
-# Copy the wheel file and install it
+# Copy your wheel and install it
 COPY dist/ai_processing-0.0.0-cp312-cp312-linux_x86_64.whl /tmp/
-RUN python3.12 -m pip install /tmp/ai_processing-0.0.0-cp312-cp312-linux_x86_64.whl
+RUN python -m pip install --no-cache-dir /tmp/ai_processing-0.0.0-cp312-cp312-linux_x86_64.whl
 
-# Expose the port FastAPI runs on
+# Set working directory
+WORKDIR /app
+COPY . /app
+
+# Expose the port FastAPI uses
 EXPOSE 8000
 
-# Set the working directory
-WORKDIR /app
-
-# Command to run the server.py script
-CMD ["python3.12", "server.py"]
+# Command to run your server
+CMD ["python", "server.py"]
