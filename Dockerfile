@@ -30,7 +30,7 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
 
 # Install pip dependencies
 COPY requirements.txt .
-RUN python3.12 -m pip install -r requirements.txt
+RUN python3.12 -m pip install -r requirements.txt --break-system-packages
 
 # Copy the wheel file and install it
 COPY dist/ai_processing-0.0.0-cp312-cp312-linux_x86_64.whl /tmp/
