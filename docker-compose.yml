@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  nsfw_ai_server:
+    image: ghcr.io/cat-ling/nsfw_ai_model_server:latest
+    container_name: nsfw_ai_server
+    ports:
+      - "8000:8000"
+    environment:
+      PYTHONUNBUFFERED: 1
+    volumes:
+      - ./models:/app/models   # download CPU models from https://github.com/skier233/nsfw_ai_model_server/wiki/AI-Models
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 4G
