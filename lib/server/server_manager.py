@@ -128,10 +128,7 @@ async def check_inactivity():
             last_request_timestamp = middleware.last_request_timestamp
             # no requests in the last 10 minutes
             print("No requests in the last 5 minutes, Clearing cached memory")
-            if torch.cuda.is_available():
-                torch.cuda.empty_cache()
-            elif torch.mps.is_available():
-                torch.mps.empty_cache()
+            torch.cuda.empty_cache()
             gc.collect()
 
 origins = [

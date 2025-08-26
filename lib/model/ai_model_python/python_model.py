@@ -10,7 +10,7 @@ class PythonModel:
         if device:
             self.device = torch.device(device)
         else:
-            self.device = torch.device('cuda' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu')
+            self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self._model_loaded = False
         self.load_model()
 
@@ -58,10 +58,7 @@ class PythonModel:
 
     def unload_model(self):
         self.model = None
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-        elif torch.mps.is_available():
-            torch.mps.empty_cache()
+        torch.cuda.empty_cache()
         gc.collect()
         self.model_loaded = False
 
@@ -87,8 +84,5 @@ class PythonModel:
         Context management method to close the TensorBoard writer upon exiting the 'with' block.
         """
         del self.model
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-        elif torch.mps.is_available():
-            torch.mps.empty_cache()
+        torch.cuda.empty_cache()
         gc.collect()
